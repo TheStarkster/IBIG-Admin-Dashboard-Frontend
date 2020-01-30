@@ -8,7 +8,6 @@ const app = express();
 app.use(expressLayouts);
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'assets')));
-console.log(path.join(__dirname, 'assets'))
 // Routes
 app.use('/', require('./routes/paths'));
 
