@@ -1,0 +1,30 @@
+version: '3'
+
+services: 
+    server:
+        build: ./server
+        expose: 
+            - ${SAP}
+        environment: 
+            HOST: ${HOST}
+            SAP: ${SAP}
+        ports: 
+            - '${SAP}:${SAP}'
+        volumes: 
+            - ./server/src= '/srv/app/ibig-admin-server'
+        command: npm run dev
+    client:
+        build: ./client
+        environment:
+            - RAP=${RAP}
+        expose: 
+            - ${RAP}
+        ports:
+            - '${RAP}:${RAP}'
+        volumes: 
+            - ./client/src = '/srv/app/ibig-admin-client'
+            - ./client/public='/srv/app/ibig-admin-client/public'
+        links: 
+            - server
+        command: npm run start
+            
