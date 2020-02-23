@@ -1,9 +1,0 @@
-FROM node
-
-RUN mkdir -p /srv/app/ibig-admin-server
-WORKDIR /srv/app/ibig-admin-server
-COPY package.json /srv/app/ibig-admin-server
-RUN npm install
-COPY . /srv/app/ibig-admin-server
-
-CMD ["npm", "run", "dev"]
