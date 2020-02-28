@@ -1,33 +1,76 @@
-import React, { useState, useEffect } from "react";
+import React, { Component } from "react";
 
-export default function PrizeAmount(props) {
-  const [amount, setAmount] = useState(props.amount);
-  useEffect(() => {
-    setAmount(props.amount);
-  }, [props.amount]);
+export default class PrizeAmount extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      amount: 0,
+      prizeType: ""
+    };
 
-  const SliderChangeHandler = e => {
-    setAmount(e.target.value);
+    this.componentWillMount = () => {
+      this.setState({
+        amount: props.amount,
+        prizeType: props.prizeType
+      });
+    };
+    this.SliderChangeHandler = e => {
+      console.log(e.target.value);
+      this.setState({
+        amount: e.target.value
+      });
+    };
+  }
+  getStateValue = () => {
+    return this.state;
   };
-  return (
-    <div class="form-group">
-      <label>Rank {props.rank}</label>
-      <div class="d-flex justify-content-center align-items-center">
-        <input
-          class="custom-range"
-          type="range"
-          value={amount}
-          min={props.min}
-          max={props.max}
-          onChange={SliderChangeHandler}
-        />
-        <input
-          class="form-control"
-          type="number"
-          value={amount}
-          onChange={SliderChangeHandler}
-        />
+  resetValues = () => {
+    if (this.props.amount !== this.state.amount) {
+      this.setState({
+        amount: this.props.amount
+      });
+    }
+  };
+  render() {
+    return (
+      <div class="form-group">
+        <label>Rank {this.props.rank}</label>
+        <div class="d-flex justify-content-center align-items-center">
+          <input
+            class="custom-range"
+            type="range"
+            value={this.state.amount}
+            min={this.props.min}
+            max={this.props.max}
+            onChange={e => this.SliderChangeHandler(e)}
+          />
+          <input
+            class="form-control"
+            type="number"
+            style={{ marginRight: "6px" }}
+            value={this.state.amount}
+            onChange={e => this.SliderChangeHandler(e)}
+          />
+          <select
+            id="cars"
+            class="form-control"
+            onChange={e => this.setState({ prizeType: e.target.value })}
+          >
+            <option
+              value="money"
+              selected={this.props.prizeType == "money" ? "selected" : ""}
+            >
+              Money
+            </option>
+            <option
+              value="coins"
+              selected={this.props.prizeType == "coins" ? "selected" : ""}
+            >
+              Coins
+            </option>
+          </select>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }

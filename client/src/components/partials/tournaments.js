@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import AutoComplete from "../sub-components/autosuggest";
 import PrizeAmount from "../sub-components/prizeAmount";
+import axios from "axios";
 
 class Tournaments extends Component {
   constructor(props) {
     super(props);
-
+    this.refArr = [];
     this.state = {
       formValues: {
         co: 0,
@@ -13,6 +14,7 @@ class Tournaments extends Component {
         jf: 0,
         jl: 0,
         mr: 0,
+        bonusAllowance: 0,
         gd: false,
         grouped: null,
         afterRank: null,
@@ -22,7 +24,9 @@ class Tournaments extends Component {
       gp: 0.5,
       disabled: false,
       createTBtn: false,
-      prizeGridArray: []
+      prizeGridArray: [],
+      prizeAsMoney: true,
+      prizeAsCoins: false
     };
     this.calculatePrizeGrid = a => {
       var cutOut = this.state.formValues.co;
@@ -35,32 +39,49 @@ class Tournaments extends Component {
       var part0 = (1 - a) / (1 - Math.pow(a, numberOfPlayer));
       for (var i = 1; i <= this.state.formValues.mr; i++) {
         var res = part0 * Math.pow(a, i - 1) * prizePool;
-        resArr.push({
-          rank: i,
-          amount: Math.round(res)
-        });
+        this.refArr["elem" + i] = React.createRef();
+        resArr.push(
+          <PrizeAmount
+            amount={Math.round(res)}
+            rank={i}
+            key={i}
+            max={prizePool}
+            min={0}
+            ref={this.refArr["elem" + i]}
+            prizeType={this.state.prizeAsMoney ? "money" : "coins"}
+          />
+        );
       }
-      this.renderPrizeGrid(resArr, prizePool);
-    };
-  }
-
-  renderPrizeGrid(arr, prizePool) {
-    var retArr = [];
-    arr.forEach(element => {
-      retArr.push(
-        <PrizeAmount
-          rank={element.rank}
-          amount={element.amount}
-          key={element.rank}
-          min={0}
-          max={prizePool}
-        />
+      this.setState(
+        {
+          prizeGridArray: resArr
+        },
+        () => {
+          for (var i = 1; i <= this.state.formValues.mr; i++) {
+            this.refArr["elem" + i].current.resetValues();
+          }
+        }
       );
-    });
-    console.log(retArr);
-    this.setState({
-      prizeGridArray: retArr
-    });
+    };
+    this.CreateTournament = () => {
+      var TempMrpd = [];
+      for (var i = 1; i < this.state.formValues.mr; i++) {
+        TempMrpd.push(this.refArr["elem" + i].current.getStateValue());
+      }
+      var temp = this.state.formValues;
+      temp.mrpd = TempMrpd;
+      this.setState(
+        {
+          formValues: temp
+        },
+        () => {
+          axios.post(
+            "http://localhost:5000/tournament/create",
+            this.state.formValues
+          );
+        }
+      );
+    };
   }
 
   render() {
@@ -82,6 +103,7 @@ class Tournaments extends Component {
                   class="form-control"
                   type="text"
                   inputmode="numeric"
+                  placeholder="Numeric (Rs.)"
                   required=""
                   onChange={e => {
                     var temp = this.state.formValues;
@@ -93,9 +115,41 @@ class Tournaments extends Component {
                 />
               </div>
               <div class="form-group">
-                <div>
+                <label>Cut Out (%)</label>
+                <input
+                  class="form-control"
+                  type="text"
+                  inputmode="numeric"
+                  placeholder="Numeric (%)"
+                  onChange={e => {
+                    var temp = this.state.formValues;
+                    temp.co = parseInt(e.target.value);
+                    this.setState({
+                      formValues: temp
+                    });
+                  }}
+                />
+              </div>
+              <div class="form-group">
+                <label>Join With Bonus Allowance</label>
+                <input
+                  class="form-control"
+                  type="text"
+                  inputmode="numeric"
+                  placeholder="Numeric (Rs.)"
+                  onChange={e => {
+                    var temp = this.state.formValues;
+                    temp.co = parseInt(e.target.value);
+                    this.setState({
+                      formValues: temp
+                    });
+                  }}
+                />
+              </div>
+              <div class="form-group">
+                <div style={{ display: "inline" }}>
                   <label>Joining Limit</label>
-                  <div class="form-check">
+                  <div class="form-check" style={{ float: "right" }}>
                     <input
                       class="form-check-input"
                       type="checkbox"
@@ -114,6 +168,7 @@ class Tournaments extends Component {
                 <input
                   class="form-control"
                   type="text"
+                  placeholder="Numeric"
                   inputmode="numeric"
                   disabled={this.state.disabled}
                   onChange={e => {
@@ -126,26 +181,12 @@ class Tournaments extends Component {
                 />
               </div>
               <div class="form-group">
-                <label>Cut Out (%)</label>
-                <input
-                  class="form-control"
-                  type="text"
-                  inputmode="numeric"
-                  onChange={e => {
-                    var temp = this.state.formValues;
-                    temp.co = parseInt(e.target.value);
-                    this.setState({
-                      formValues: temp
-                    });
-                  }}
-                />
-              </div>
-              <div class="form-group">
                 <label>Prize Distributed in</label>
                 <input
                   class="form-control"
                   type="text"
                   inputmode="numeric"
+                  placeholder="Numeric"
                   onChange={e => {
                     var temp = this.state.formValues;
                     temp.mr = parseInt(e.target.value);
@@ -155,7 +196,7 @@ class Tournaments extends Component {
                   }}
                 />
               </div>
-              <div class="form-row">
+              {/* <div class="form-row">
                 <div class="col">
                   <div class="form-check custom-control custom-switch">
                     <input
@@ -178,7 +219,7 @@ class Tournaments extends Component {
                     </label>
                   </div>
                 </div>
-              </div>
+              </div> */}
               {this.state.formValues.gd ? (
                 <div class="form-row">
                   <div class="col">
@@ -219,6 +260,54 @@ class Tournaments extends Component {
                   </div>
                 </div>
               ) : null}
+              <div class="form-row">
+                <div class="col">
+                  <div class="form-check custom-control custom-switch">
+                    <input
+                      class="form-check-input custom-control-input"
+                      type="checkbox"
+                      checked={this.state.prizeAsMoney}
+                      id="customSwitch3"
+                      onChange={() => {
+                        this.setState({
+                          prizeAsCoins: this.state.prizeAsMoney,
+                          prizeAsMoney: !this.state.prizeAsMoney
+                        });
+                      }}
+                    />
+                    <label
+                      class="form-check-label custom-control-label"
+                      for="customSwitch3"
+                    >
+                      Prize as Money (Prize will be Distributed as Money)
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="col">
+                  <div class="form-check custom-control custom-switch">
+                    <input
+                      class="form-check-input custom-control-input"
+                      type="checkbox"
+                      checked={this.state.prizeAsCoins}
+                      id="customSwitch4"
+                      onChange={() => {
+                        this.setState({
+                          prizeAsMoney: this.state.prizeAsCoins,
+                          prizeAsCoins: !this.state.prizeAsCoins
+                        });
+                      }}
+                    />
+                    <label
+                      class="form-check-label custom-control-label"
+                      for="customSwitch4"
+                    >
+                      Prize as Coins (Prize will be Distributed as Coins)
+                    </label>
+                  </div>
+                </div>
+              </div>
               <button
                 class="btn btn-primary float-right"
                 type="button"
@@ -270,7 +359,11 @@ class Tournaments extends Component {
                   </div>
                 </div>
               </div>
-              <button class="btn btn-success float-right" type="button">
+              <button
+                class="btn btn-success float-right"
+                type="button"
+                onClick={() => this.CreateTournament()}
+              >
                 Create Tournament
               </button>
             </form>

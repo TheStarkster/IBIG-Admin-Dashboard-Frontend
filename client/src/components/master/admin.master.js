@@ -4,7 +4,7 @@ import Dashboard from "../partials/dashboard";
 
 export default function AdminMaster() {
   const [navbar, setNavbar] = useState(0);
-  const NavItems = [<Tournaments />,<Dashboard /> ];
+  const NavItems = [<Dashboard />,<Tournaments /> ];
   return (
     <React.Fragment>
         <div id="wrapper">
