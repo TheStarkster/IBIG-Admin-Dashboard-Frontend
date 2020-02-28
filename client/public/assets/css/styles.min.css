@@ -1,0 +1,62 @@
+.sidebar-dark hr.sidebar-divider {
+  width: 152px;
+}
+#wrapper #content-wrapper #content {
+  margin-left: 225px;
+}
+.text-dark.mb-1 {
+  margin-bottom: 7px;
+  padding-bottom: 40px;
+}
+.h5,
+h5 {
+  margin-top: 4px;
+}
+.form-check.custom-control.custom-switch {
+  padding-top: 0;
+}
+.form-group {
+  padding-top: 16px;
+}
+.custom-range {
+  flex: 8;
+  padding-right: 34px;
+}
+.form-control {
+  flex: 2;
+}
+.btn.btn-success.float-right {
+  margin-top: 14px;
+}
+.card.shadow {
+  margin-top: 40px;
+}
+span {
+  cursor: pointer;
+}
+.suggest-root {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.suggest-ul {
+  position: absolute;
+  transform: translateY(39px);
+  list-style-type: none;
+  padding-left: 8px;
+  z-index: 2;
+  background-color: white;
+  box-shadow: 0px 20px 45px 0px rgba(0, 0, 0, 0.4);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+.suggest-li {
+  position: relative;
+  margin: 8px;
+  cursor: pointer;
+}
+.fixed-height-to-left {
+  height: 654px;
+  overflow-y: scroll;
+}
