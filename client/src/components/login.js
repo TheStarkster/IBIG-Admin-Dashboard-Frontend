@@ -7,7 +7,7 @@ function LoginPage(props) {
     event.preventDefault();
     console.log(event);
     axios
-      .post("http://localhost:5000/auth/login", {
+      .post("http://162.241.71.139/:5000/auth/login", {
         username: event.srcElement.elements[0].value,
         password: event.srcElement.elements[1].value
       })
