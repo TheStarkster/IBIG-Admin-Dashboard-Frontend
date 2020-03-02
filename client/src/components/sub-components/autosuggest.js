@@ -8,7 +8,7 @@ export default function AutoComplete(props) {
   };
   useEffect(() => {
     suggestUl = document.getElementById("suggest-ul-id");
-  }, []);
+  });
   const SuggestHandler = e => {
     suggestUl.innerHTML = "";
     if (e.target.value !== "") {

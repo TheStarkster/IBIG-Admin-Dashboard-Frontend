@@ -56,7 +56,3 @@ span {
   margin: 8px;
   cursor: pointer;
 }
-.fixed-height-to-left {
-  height: 654px;
-  overflow-y: scroll;
-}

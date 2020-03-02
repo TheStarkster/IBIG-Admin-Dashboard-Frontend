@@ -14,6 +14,10 @@ class Tournaments extends Component {
         jf: 0,
         jl: 0,
         mr: 0,
+        ba: 0,
+        name: "",
+        start: null,
+        end: null,
         bonusAllowance: 0,
         gd: false,
         grouped: null,
@@ -27,6 +31,13 @@ class Tournaments extends Component {
       prizeGridArray: [],
       prizeAsMoney: true,
       prizeAsCoins: false
+    };
+    this.componentDidMount = () => {
+      document.getElementById(
+        "calculate-prize-grid"
+      ).style.height = document
+        .getElementById("create-new-tournament")
+        .clientHeight.toString();
     };
     this.calculatePrizeGrid = a => {
       var cutOut = this.state.formValues.co;
@@ -89,13 +100,73 @@ class Tournaments extends Component {
       <React.Fragment>
         <h3 class="text-dark mb-1">Manage Tournament</h3>
         <div class="row">
-          <div class="col">
+          <div class="col" id="create-new-tournament">
             <h5 style={{ paddingBottom: "14px" }}>Create New Tournament</h5>
             <hr />
             <form>
               <div class="form-group">
+                <label>Tournament Name</label>
+                <input
+                  class="form-control"
+                  type="text"
+                  inputmode="numeric"
+                  placeholder="Character (Max 10)"
+                  required=""
+                  onChange={e => {
+                    var temp = this.state.formValues;
+                    temp.name = e.target.value;
+                    this.setState({
+                      formValues: temp
+                    });
+                  }}
+                />
+              </div>
+              <div class="form-group">
                 <label>Choose Game</label>
                 <AutoComplete values={["Flappy Bird", "Pin The Circle"]} />
+              </div>
+              <div class="form-row">
+                <div class="col">
+                  <div class="form-group">
+                    <label>Start Time</label>
+                    <input
+                      class="form-control"
+                      type="datetime-local"
+                      inputmode="numeric"
+                      required=""
+                      onChange={e => {
+                        var temp = this.state.formValues;
+                        console.log(e.target.value);
+                        var myDate = new Date(e.target.value);
+                        var myEpoch = myDate.getTime() / 1000.0;
+                        temp.start = myEpoch;
+                        this.setState({
+                          formValues: temp
+                        });
+                      }}
+                    />
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group">
+                    <label>End Time</label>
+                    <input
+                      class="form-control"
+                      type="datetime-local"
+                      inputmode="numeric"
+                      required=""
+                      onChange={e => {
+                        var temp = this.state.formValues;
+                        var myDate = new Date(e.target.value);
+                        var myEpoch = myDate.getTime() / 1000.0;
+                        temp.end = myEpoch;
+                        this.setState({
+                          formValues: temp
+                        });
+                      }}
+                    />
+                  </div>
+                </div>
               </div>
               <div class="form-group">
                 <label>Joining Fee</label>
@@ -139,7 +210,7 @@ class Tournaments extends Component {
                   placeholder="Numeric (Rs.)"
                   onChange={e => {
                     var temp = this.state.formValues;
-                    temp.co = parseInt(e.target.value);
+                    temp.ba = parseInt(e.target.value);
                     this.setState({
                       formValues: temp
                     });
@@ -317,7 +388,7 @@ class Tournaments extends Component {
               </button>
             </form>
           </div>
-          <div class="col fixed-height-to-left">
+          <div class="col" id="calculate-prize-grid">
             <div style={{ display: "flex" }}>
               <h5 style={{ flex: 1 }}>Prize Grid</h5>
               <div
