@@ -87,7 +87,7 @@ class Tournaments extends Component {
         },
         () => {
           axios.post(
-            "http://localhost:5000/tournament/create",
+            "http://162.241.71.139:5000/tournament/create",
             this.state.formValues
           );
         }
