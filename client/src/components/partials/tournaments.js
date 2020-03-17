@@ -8,6 +8,7 @@ class Tournaments extends Component {
     super(props);
     this.refArr = [];
     this.state = {
+      autoSuggestGames: [],
       formValues: {
         co: 0,
         gid: 0,
@@ -23,7 +24,9 @@ class Tournaments extends Component {
         grouped: null,
         afterRank: null,
         mrpd: [],
-        c2: false
+        c2: false,
+        otp: false,
+        coins: false
       },
       gp: 0.5,
       disabled: false,
@@ -38,10 +41,16 @@ class Tournaments extends Component {
       ).style.height = document
         .getElementById("create-new-tournament")
         .clientHeight.toString();
+      axios.get("http://162.241.71.139:5000/game/getall").then(u => {
+        console.log(u.data);
+        this.setState({
+          autoSuggestGames: u.data
+        });
+      });
     };
     this.calculatePrizeGrid = a => {
       var cutOut = this.state.formValues.co;
-      var numberOfPlayer = this.state.formValues.jl;
+      var numberOfPlayer = this.state.formValues.mr;
       var collectionAmount =
         this.state.formValues.jl * this.state.formValues.jf;
       var Amountdetucted = (collectionAmount * cutOut) / 100;
@@ -76,8 +85,9 @@ class Tournaments extends Component {
     };
     this.CreateTournament = () => {
       var TempMrpd = [];
-      for (var i = 1; i < this.state.formValues.mr; i++) {
+      for (var i = 1; i <= this.state.formValues.mr; i++) {
         TempMrpd.push(this.refArr["elem" + i].current.getStateValue());
+        console.log(this.refArr["elem" + i].current.getStateValue());
       }
       var temp = this.state.formValues;
       temp.mrpd = TempMrpd;
@@ -86,6 +96,7 @@ class Tournaments extends Component {
           formValues: temp
         },
         () => {
+          console.log(this.state.formValues);
           axios.post(
             "http://162.241.71.139:5000/tournament/create",
             this.state.formValues
@@ -123,7 +134,7 @@ class Tournaments extends Component {
               </div>
               <div class="form-group">
                 <label>Choose Game</label>
-                <AutoComplete values={["Flappy Bird", "Pin The Circle"]} />
+                <AutoComplete values={this.state.autoSuggestGames} />
               </div>
               <div class="form-row">
                 <div class="col">
@@ -169,7 +180,26 @@ class Tournaments extends Component {
                 </div>
               </div>
               <div class="form-group">
-                <label>Joining Fee</label>
+                <div style={{ display: "inline" }}>
+                  <label>Joining Fee</label>
+                  <div class="form-check" style={{ float: "right" }}>
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="formCheck-1"
+                      onChange={() => {
+                        var temp = this.state.formValues;
+                        temp.coins = !this.state.formValues.coins;
+                        this.setState({
+                          formValues: temp
+                        });
+                      }}
+                    />
+                    <label class="form-check-label" for="formCheck-1">
+                      Coins
+                    </label>
+                  </div>
+                </div>
                 <input
                   class="form-control"
                   type="text"
@@ -426,6 +456,30 @@ class Tournaments extends Component {
                       for="customSwitch2"
                     >
                       Allow Unregistered User to Join Tournament
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="col">
+                  <div class="form-check custom-control custom-switch">
+                    <input
+                      class="form-check-input custom-control-input"
+                      type="checkbox"
+                      id="customSwitch5"
+                      onChange={() => {
+                        var temp = this.state.formValues;
+                        temp.otp = !this.state.formValues.otp;
+                        this.setState({
+                          formValues: temp
+                        });
+                      }}
+                    />
+                    <label
+                      class="form-check-label custom-control-label"
+                      for="customSwitch5"
+                    >
+                      One Time Play
                     </label>
                   </div>
                 </div>

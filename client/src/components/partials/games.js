@@ -9,8 +9,6 @@ export default class Games extends Component {
       loaded: false,
       name: "",
       url: "",
-      // image: null,
-      // imagePreview: null,
       wonAmount: ""
     };
   }
@@ -65,40 +63,6 @@ export default class Games extends Component {
                   }}
                 />
               </div>
-              {/* <div className="form-group">
-                <label>Game Image</label>
-                <div class="input-group mb-3">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text" id="inputGroupFileAddon01">
-                      Upload
-                    </span>
-                  </div>
-                  <div class="custom-file">
-                    <input
-                      type="file"
-                      class="custom-file-input"
-                      id="inputGroupFile01"
-                      aria-describedby="inputGroupFileAddon01"
-                      onChange={e => {
-                        this.setState(
-                          {
-                            image: e.target.files[0]
-                          },
-                          () => {
-                            if (this.state.image !== null) {
-                              console.log(this.state.image);
-                              this.setState({ loaded: true });
-                            }
-                          }
-                        );
-                      }}
-                    />
-                    <label class="custom-file-label" for="inputGroupFile01">
-                      Choose file
-                    </label>
-                  </div>
-                </div>
-              </div> */}
               <div className="form-group">
                 <label>Won Amount</label>
                 <input

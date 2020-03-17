@@ -21,7 +21,7 @@ const FileUpload = props => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("name", props.name);
-    formData.append("url", props.name);
+    formData.append("url", props.url);
     formData.append("wonAmount", props.wonAmount);
 
     try {

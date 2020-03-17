@@ -9,6 +9,11 @@ export default function AutoComplete(props) {
   useEffect(() => {
     suggestUl = document.getElementById("suggest-ul-id");
   });
+  useEffect(() => {
+    if (props.values.length !== 0) {
+      suggestUl.innerHTML = "";
+    }
+  }, [props.values]);
   const SuggestHandler = e => {
     suggestUl.innerHTML = "";
     if (e.target.value !== "") {
@@ -17,17 +22,23 @@ export default function AutoComplete(props) {
       var li = document.createElement("li");
       li.setAttribute("class", "suggest-li");
       li.onclick = called;
-      props.values.forEach(element => {
-        if (
-          element
-            .toLowerCase()
-            .trim()
-            .includes(e.target.value)
-        ) {
-          li.innerText = element;
-          suggestUl.appendChild(li);
-        }
-      });
+      if (props.values.length !== 0) {
+        props.values.forEach(element => {
+          if (
+            element.name
+              .toLowerCase()
+              .trim()
+              .includes(e.target.value)
+          ) {
+            li.innerText = element.name;
+            li.id = element.id;
+            suggestUl.appendChild(li);
+          }
+        });
+      } else {
+        li.innerText = "Fetching...";
+        suggestUl.appendChild(li);
+      }
     }
   };
 

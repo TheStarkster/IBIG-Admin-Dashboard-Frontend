@@ -5,7 +5,6 @@ function LoginPage(props) {
   let history = useHistory();
   onsubmit = event => {
     event.preventDefault();
-    console.log(event);
     axios
       .post("http://162.241.71.139:5000/auth/login", {
         username: event.srcElement.elements[0].value,
