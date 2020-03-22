@@ -31,7 +31,7 @@ class Tournaments extends Component {
         mmrpd: [],
         mjl: 0,
         mmr: 0,
-        gp: 0.5,
+        gp: 0.5
       },
       mgp: 0.5,
       disabled: false,
@@ -39,7 +39,8 @@ class Tournaments extends Component {
       prizeGridArray: [],
       minPrizeGridArray: [],
       prizeAsMoney: true,
-      prizeAsCoins: false
+      prizeAsCoins: false,
+      Mvisibility: false
     };
     this.componentDidMount = () => {
       document.getElementById(
@@ -286,6 +287,7 @@ class Tournaments extends Component {
                     type="text"
                     inputmode="numeric"
                     placeholder="Numeric (%)"
+                    disabled={this.state.Mvisibility}
                     onChange={e => {
                       var temp = this.state.formValues;
                       temp.mco = parseInt(e.target.value);
@@ -371,7 +373,8 @@ class Tournaments extends Component {
                     type="text"
                     placeholder="Numeric"
                     inputmode="numeric"
-                    disabled={this.state.disabled}
+                    disabled={this.state.Mvisibility}
+                    // disabled={this.state.disabled}
                     onChange={e => {
                       var temp = this.state.formValues;
                       temp.mjl = parseInt(e.target.value);
@@ -406,6 +409,7 @@ class Tournaments extends Component {
                     type="text"
                     inputmode="numeric"
                     placeholder="Numeric"
+                    disabled={this.state.Mvisibility}
                     onChange={e => {
                       var temp = this.state.formValues;
                       temp.mmr = parseInt(e.target.value);
@@ -528,20 +532,31 @@ class Tournaments extends Component {
                   </div>
                 </div>
               </div>
-              <div class="form-row">
+              {/* <div class="form-row">
                 <div class="col">
                   <div class="form-check custom-control custom-switch">
                     <input
                       class="form-check-input custom-control-input"
                       type="checkbox"
-                      // checked={this.state.prizeAsCoins}
+                      checked={this.state.Mvisibility}
                       id="customSwitch8"
-                      // onChange={() => {
-                      //   this.setState({
-                      //     prizeAsMoney: this.state.prizeAsCoins,
-                      //     prizeAsCoins: !this.state.prizeAsCoins
-                      //   });
-                      // }}
+                      onChange={e => {
+                        this.setState();
+                        if (this.state.Mvisibility) {
+                          var temp = this.state.formValues;
+                          temp.mmr = this.state.formValues.mr;
+                          temp.mjl = this.state.formValues.mjl;
+                          temp.mco = this.state.co;
+                          this.setState({
+                            formValues: temp,
+                            Mvisibility: !this.state.Mvisibility
+                          });
+                        } else {
+                          this.setState({
+                            Mvisibility: !this.state.Mvisibility
+                          });
+                        }
+                      }}
                     />
                     <label
                       class="form-check-label custom-control-label"
@@ -551,7 +566,7 @@ class Tournaments extends Component {
                     </label>
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div class="form-row">
                 <div class="col">
                   <div class="form-check custom-control custom-switch">
@@ -580,7 +595,10 @@ class Tournaments extends Component {
                 class="btn btn-primary float-right"
                 type="button"
                 onClick={() =>
-                  this.calculatePrizeGrid(this.state.formValues.gp, this.state.mgp)
+                  this.calculatePrizeGrid(
+                    this.state.formValues.gp,
+                    this.state.mgp
+                  )
                 }
               >
                 Calculate Prize Grid
