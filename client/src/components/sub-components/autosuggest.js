@@ -4,6 +4,7 @@ export default function AutoComplete(props) {
   var suggestUl;
   const called = e => {
     document.getElementById("auto-suggest-game").value = e.target.innerText;
+    document.getElementById("suggestID").value = e.target.id;
     suggestUl.innerHTML = "";
   };
   useEffect(() => {
@@ -14,6 +15,7 @@ export default function AutoComplete(props) {
       suggestUl.innerHTML = "";
     }
   }, [props.values]);
+
   const SuggestHandler = e => {
     suggestUl.innerHTML = "";
     if (e.target.value !== "") {
@@ -44,6 +46,7 @@ export default function AutoComplete(props) {
 
   return (
     <div className="suggest-root">
+      <input type="hidden" id="suggestID" />
       <input
         className="form-control"
         id="auto-suggest-game"

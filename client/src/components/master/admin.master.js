@@ -143,7 +143,11 @@ export default function AdminMaster() {
             <footer class="bg-white sticky-footer">
               <div class="container my-auto">
                 <div class="text-center my-auto copyright">
-                  <span>Developed By Grevity.in</span>
+                  <span>
+                    <a href="http://www.grevity.in" target="_blank">
+                      Developed By Grevity.in
+                    </a>
+                  </span>
                 </div>
               </div>
             </footer>

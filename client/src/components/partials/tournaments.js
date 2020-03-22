@@ -11,6 +11,7 @@ class Tournaments extends Component {
       autoSuggestGames: [],
       formValues: {
         co: 0,
+        mco: 0,
         gid: 0,
         jf: 0,
         jl: 0,
@@ -26,12 +27,17 @@ class Tournaments extends Component {
         mrpd: [],
         c2: false,
         otp: false,
-        coins: false
+        coins: false,
+        mmrpd: [],
+        mjl: 0,
+        mmr: 0,
+        gp: 0.5,
       },
-      gp: 0.5,
+      mgp: 0.5,
       disabled: false,
       createTBtn: false,
       prizeGridArray: [],
+      minPrizeGridArray: [],
       prizeAsMoney: true,
       prizeAsCoins: false
     };
@@ -48,7 +54,8 @@ class Tournaments extends Component {
         });
       });
     };
-    this.calculatePrizeGrid = a => {
+    this.calculatePrizeGrid = (a, b) => {
+      //maximum prize grid...
       var cutOut = this.state.formValues.co;
       var numberOfPlayer = this.state.formValues.mr;
       var collectionAmount =
@@ -72,25 +79,65 @@ class Tournaments extends Component {
           />
         );
       }
+
+      //minimum prize grid...
+      var cutOut = this.state.formValues.mco;
+      var numberOfPlayer = this.state.formValues.mmr;
+      var collectionAmount =
+        this.state.formValues.mjl * this.state.formValues.jf;
+      var Amountdetucted = (collectionAmount * cutOut) / 100;
+      var prizePool = collectionAmount - Amountdetucted;
+      var mResArr = [];
+      var part0 = (1 - b) / (1 - Math.pow(b, numberOfPlayer));
+      for (var i = 1; i <= this.state.formValues.mmr; i++) {
+        var res = part0 * Math.pow(b, i - 1) * prizePool;
+        this.refArr["m-elem" + i] = React.createRef();
+        mResArr.push(
+          <PrizeAmount
+            amount={Math.round(res)}
+            rank={i}
+            key={i}
+            max={prizePool}
+            min={0}
+            ref={this.refArr["m-elem" + i]}
+            prizeType={this.state.prizeAsMoney ? "money" : "coins"}
+          />
+        );
+      }
+
+      //final things...
       this.setState(
         {
+          minPrizeGridArray: mResArr,
           prizeGridArray: resArr
         },
         () => {
           for (var i = 1; i <= this.state.formValues.mr; i++) {
             this.refArr["elem" + i].current.resetValues();
           }
+          for (var i = 1; i <= this.state.formValues.mmr; i++) {
+            this.refArr["m-elem" + i].current.resetValues();
+          }
         }
       );
     };
     this.CreateTournament = () => {
       var TempMrpd = [];
+      var TempMmrpd = [];
       for (var i = 1; i <= this.state.formValues.mr; i++) {
         TempMrpd.push(this.refArr["elem" + i].current.getStateValue());
-        console.log(this.refArr["elem" + i].current.getStateValue());
+      }
+      for (var i = 1; i <= this.state.formValues.mmr; i++) {
+        TempMmrpd.push(this.refArr["m-elem" + i].current.getStateValue());
       }
       var temp = this.state.formValues;
       temp.mrpd = TempMrpd;
+      temp.mmrpd = TempMmrpd;
+      temp.gid = this.state.autoSuggestGames.find(
+        a =>
+          a.name.toLowerCase() ==
+          document.getElementById("auto-suggest-game").value.toLowerCase()
+      ).id;
       this.setState(
         {
           formValues: temp
@@ -215,21 +262,39 @@ class Tournaments extends Component {
                   }}
                 />
               </div>
-              <div class="form-group">
-                <label>Cut Out (%)</label>
-                <input
-                  class="form-control"
-                  type="text"
-                  inputmode="numeric"
-                  placeholder="Numeric (%)"
-                  onChange={e => {
-                    var temp = this.state.formValues;
-                    temp.co = parseInt(e.target.value);
-                    this.setState({
-                      formValues: temp
-                    });
-                  }}
-                />
+              <div className="pair-container">
+                <div class="form-group">
+                  <label>Cut Out (%) Max</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    inputmode="numeric"
+                    placeholder="Numeric (%)"
+                    onChange={e => {
+                      var temp = this.state.formValues;
+                      temp.co = parseInt(e.target.value);
+                      this.setState({
+                        formValues: temp
+                      });
+                    }}
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Cut Out (%) Min</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    inputmode="numeric"
+                    placeholder="Numeric (%)"
+                    onChange={e => {
+                      var temp = this.state.formValues;
+                      temp.mco = parseInt(e.target.value);
+                      this.setState({
+                        formValues: temp
+                      });
+                    }}
+                  />
+                </div>
               </div>
               <div class="form-group">
                 <label>Join With Bonus Allowance</label>
@@ -247,55 +312,109 @@ class Tournaments extends Component {
                   }}
                 />
               </div>
-              <div class="form-group">
-                <div style={{ display: "inline" }}>
-                  <label>Joining Limit</label>
-                  <div class="form-check" style={{ float: "right" }}>
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="formCheck-1"
-                      onChange={() => {
-                        this.setState({
-                          disabled: !this.state.disabled
-                        });
-                      }}
-                    />
-                    <label class="form-check-label" for="formCheck-1">
-                      Unlimited
-                    </label>
+              <div className="pair-container">
+                <div class="form-group">
+                  <div style={{ display: "inline" }}>
+                    <label>Joining Limit Max</label>
+                    {/* <div class="form-check" style={{ float: "right" }}>
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="formCheck-1"
+                        onChange={() => {
+                          this.setState({
+                            disabled: !this.state.disabled
+                          });
+                        }}
+                      />
+                      <label class="form-check-label" for="formCheck-1">
+                        Unlimited
+                      </label>
+                    </div> */}
                   </div>
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Numeric"
+                    inputmode="numeric"
+                    disabled={this.state.disabled}
+                    onChange={e => {
+                      var temp = this.state.formValues;
+                      temp.jl = parseInt(e.target.value);
+                      this.setState({
+                        formValues: temp
+                      });
+                    }}
+                  />
                 </div>
-                <input
-                  class="form-control"
-                  type="text"
-                  placeholder="Numeric"
-                  inputmode="numeric"
-                  disabled={this.state.disabled}
-                  onChange={e => {
-                    var temp = this.state.formValues;
-                    temp.jl = parseInt(e.target.value);
-                    this.setState({
-                      formValues: temp
-                    });
-                  }}
-                />
+                <div class="form-group">
+                  <div style={{ display: "inline" }}>
+                    <label>Joining Limit Min</label>
+                    {/* <div class="form-check" style={{ float: "right" }}>
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="formCheck-1"
+                        onChange={() => {
+                          this.setState({
+                            disabled: !this.state.disabled
+                          });
+                        }}
+                      />
+                      <label class="form-check-label" for="formCheck-1">
+                        Unlimited
+                      </label>
+                    </div> */}
+                  </div>
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Numeric"
+                    inputmode="numeric"
+                    disabled={this.state.disabled}
+                    onChange={e => {
+                      var temp = this.state.formValues;
+                      temp.mjl = parseInt(e.target.value);
+                      this.setState({
+                        formValues: temp
+                      });
+                    }}
+                  />
+                </div>
               </div>
-              <div class="form-group">
-                <label>Prize Distributed in</label>
-                <input
-                  class="form-control"
-                  type="text"
-                  inputmode="numeric"
-                  placeholder="Numeric"
-                  onChange={e => {
-                    var temp = this.state.formValues;
-                    temp.mr = parseInt(e.target.value);
-                    this.setState({
-                      formValues: temp
-                    });
-                  }}
-                />
+              <div className="pair-container">
+                <div class="form-group">
+                  <label>Prize Distributed in Max</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    inputmode="numeric"
+                    placeholder="Numeric"
+                    onChange={e => {
+                      var temp = this.state.formValues;
+                      temp.mr = parseInt(e.target.value);
+                      this.setState({
+                        formValues: temp
+                      });
+                    }}
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Prize Distributed in Min</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    inputmode="numeric"
+                    placeholder="Numeric"
+                    onChange={e => {
+                      var temp = this.state.formValues;
+                      temp.mmr = parseInt(e.target.value);
+                      this.setState({
+                        formValues: temp
+                      });
+                    }}
+                  />
+                </div>
               </div>
               {/* <div class="form-row">
                 <div class="col">
@@ -409,53 +528,26 @@ class Tournaments extends Component {
                   </div>
                 </div>
               </div>
-              <button
-                class="btn btn-primary float-right"
-                type="button"
-                onClick={() => this.calculatePrizeGrid(this.state.gp)}
-              >
-                Calculate Prize Grid
-              </button>
-            </form>
-          </div>
-          <div class="col" id="calculate-prize-grid">
-            <div style={{ display: "flex" }}>
-              <h5 style={{ flex: 1 }}>Prize Grid</h5>
-              <div
-                style={{ display: "flex", flexDirection: "column", flex: "2" }}
-              >
-                <label>GP</label>
-                <input
-                  type="range"
-                  class="custom-range"
-                  value={this.state.gp}
-                  min="0.0"
-                  max="1.0"
-                  step="0.1"
-                  onChange={e => {
-                    this.setState({
-                      gp: e.target.value
-                    });
-                  }}
-                />
-              </div>
-            </div>
-            <hr />
-            <form>
-              {this.state.prizeGridArray}
               <div class="form-row">
                 <div class="col">
                   <div class="form-check custom-control custom-switch">
                     <input
                       class="form-check-input custom-control-input"
                       type="checkbox"
-                      id="customSwitch2"
+                      // checked={this.state.prizeAsCoins}
+                      id="customSwitch8"
+                      // onChange={() => {
+                      //   this.setState({
+                      //     prizeAsMoney: this.state.prizeAsCoins,
+                      //     prizeAsCoins: !this.state.prizeAsCoins
+                      //   });
+                      // }}
                     />
                     <label
                       class="form-check-label custom-control-label"
-                      for="customSwitch2"
+                      for="customSwitch8"
                     >
-                      Allow Unregistered User to Join Tournament
+                      Set Minimum Prize Grid as Maximum
                     </label>
                   </div>
                 </div>
@@ -484,6 +576,91 @@ class Tournaments extends Component {
                   </div>
                 </div>
               </div>
+              <button
+                class="btn btn-primary float-right"
+                type="button"
+                onClick={() =>
+                  this.calculatePrizeGrid(this.state.formValues.gp, this.state.mgp)
+                }
+              >
+                Calculate Prize Grid
+              </button>
+            </form>
+          </div>
+          <div class="col" id="calculate-prize-grid">
+            <div style={{ display: "flex" }}>
+              <h5 style={{ flex: 1 }}>Prize Grid</h5>
+              <div
+                style={{ display: "flex", flexDirection: "column", flex: "2" }}
+              >
+                <label>Max GP</label>
+                <input
+                  type="range"
+                  class="custom-range"
+                  value={this.state.formValues.gp}
+                  min="0.0"
+                  max="1.0"
+                  step="0.1"
+                  onChange={e => {
+                    this.setState({
+                      gp: e.target.value
+                    });
+                  }}
+                />
+              </div>
+            </div>
+            <hr />
+            <form>
+              {this.state.prizeGridArray.length == 0 ? null : (
+                <label>Maximum Prize Grid</label>
+              )}
+              {this.state.prizeGridArray}
+              <div style={{ display: "flex" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    flex: "2"
+                  }}
+                >
+                  <label>Min GP</label>
+                  <input
+                    type="range"
+                    class="custom-range"
+                    value={this.state.mgp}
+                    min="0.0"
+                    max="1.0"
+                    step="0.1"
+                    onChange={e => {
+                      this.setState({
+                        mgp: e.target.value
+                      });
+                    }}
+                  />
+                </div>
+              </div>
+              {this.state.minPrizeGridArray.length == 0 ? null : (
+                <label>Minimum Prize Grid</label>
+              )}
+              {this.state.minPrizeGridArray}
+              {/* <div class="form-row">
+                <div class="col">
+                  <div class="form-check custom-control custom-switch">
+                    <input
+                      class="form-check-input custom-control-input"
+                      type="checkbox"
+                      id="customSwitch2"
+                    />
+                    <label
+                      class="form-check-label custom-control-label"
+                      for="customSwitch2"
+                    >
+                      Allow Unregistered User to Join Tournament
+                    </label>
+                  </div>
+                </div>
+              </div> */}
+
               <button
                 class="btn btn-success float-right"
                 type="button"
