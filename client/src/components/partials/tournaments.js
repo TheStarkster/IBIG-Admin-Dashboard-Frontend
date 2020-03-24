@@ -49,9 +49,8 @@ class Tournaments extends Component {
         .getElementById("create-new-tournament")
         .clientHeight.toString();
       axios.get("http://162.241.71.139:5000/game/getall").then(u => {
-        console.log(u.data);
         this.setState({
-          autoSuggestGames: u.data
+          autoSuggestGames: u.data.message
         });
       });
     };
