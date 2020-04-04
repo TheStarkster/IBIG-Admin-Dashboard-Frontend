@@ -143,7 +143,6 @@ class Tournaments extends Component {
           formValues: temp
         },
         () => {
-          console.log(this.state.formValues);
           axios.post(
             "http://162.241.71.139:5000/tournament/create",
             this.state.formValues
@@ -194,7 +193,6 @@ class Tournaments extends Component {
                       required=""
                       onChange={e => {
                         var temp = this.state.formValues;
-                        console.log(e.target.value);
                         var myDate = new Date(e.target.value);
                         var myEpoch = myDate.getTime() / 1000.0;
                         temp.start = myEpoch;

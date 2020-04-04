@@ -2,10 +2,11 @@ import React, { Component, useState } from "react";
 import Tournaments from "../partials/tournaments";
 import Dashboard from "../partials/dashboard";
 import Games from "../partials/games";
+import Banner from "../partials/banner";
 
 export default function AdminMaster() {
   const [navbar, setNavbar] = useState(0);
-  const NavItems = [<Dashboard />, <Tournaments />, <Games />];
+  const NavItems = [<Banner />, <Dashboard />, <Tournaments />, <Games />];
   return (
     <React.Fragment>
       <div id="wrapper">
@@ -49,6 +50,16 @@ export default function AdminMaster() {
                 <a class="nav-link">
                   <i class="fas fa-gamepad" />
                   <span>Games</span>
+                </a>
+              </li>
+              <li
+                class="nav-item"
+                role="presentation"
+                onClick={() => setNavbar(3)}
+              >
+                <a class="nav-link">
+                  <i class="fas fa-ad"></i>
+                  <span>Banner</span>
                 </a>
               </li>
             </ul>
