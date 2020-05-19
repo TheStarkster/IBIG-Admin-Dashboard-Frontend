@@ -37,16 +37,19 @@ class Banner extends Component {
       Tfile: null,
       TfileName: "Choose File",
       Tid: null,
-      TBannerUpdate: false
+      TBannerUpdate: false,
     };
     this.componentDidMount = () => {
-      Axios.get("http://162.241.71.139:5000/banner/getAll").then(u => {
-        this.setState({
-          TSBannerArray: [...u.data.message.filter(x => x.position == 0)],
-          IBBannerArray: [...u.data.message.filter(x => x.position == 1)],
-          TBannerArray: [...u.data.message.filter(x => x.position == 2)]
-        });
-      });
+      Axios.get("http://162.241.71.139:5000/banner/getAll/To-admin").then(
+        (u) => {
+          console.log(u.data);
+          this.setState({
+            TSBannerArray: [...u.data.message.filter((x) => x.position == 0)],
+            IBBannerArray: [...u.data.message.filter((x) => x.position == 1)],
+            TBannerArray: [...u.data.message.filter((x) => x.position == 2)],
+          });
+        }
+      );
     };
     this.checkIfNotEmptyTS = () => {
       if (
@@ -103,9 +106,9 @@ class Banner extends Component {
                     inputmode="numeric"
                     placeholder="Characters"
                     value={this.state.TSname}
-                    onChange={e => {
+                    onChange={(e) => {
                       this.setState({
-                        TSname: e.target.value
+                        TSname: e.target.value,
                       });
                     }}
                   />
@@ -115,12 +118,12 @@ class Banner extends Component {
                     type="datetime-local"
                     inputmode="numeric"
                     value={this.state.TSrenderToShow}
-                    onChange={e => {
+                    onChange={(e) => {
                       var myDate = new Date(e.target.value);
                       var myEpoch = myDate.getTime() / 1000.0;
                       this.setState({
                         TSrender: myEpoch,
-                        TSrenderToShow: e.target.value
+                        TSrenderToShow: e.target.value,
                       });
                     }}
                   />
@@ -131,12 +134,12 @@ class Banner extends Component {
                     inputmode="numeric"
                     required=""
                     value={this.state.TSdisposeToShow}
-                    onChange={e => {
+                    onChange={(e) => {
                       var myDate = new Date(e.target.value);
                       var myEpoch = myDate.getTime() / 1000.0;
                       this.setState({
                         TSdispose: myEpoch,
-                        TSdisposeToShow: e.target.value
+                        TSdisposeToShow: e.target.value,
                       });
                     }}
                   />
@@ -151,7 +154,7 @@ class Banner extends Component {
                         ? this.state.TSfile[0]
                         : this.state.TSfile
                     }
-                    onChange={e => {
+                    onChange={(e) => {
                       console.log(e.target.files[0]);
                       this.setState({
                         TSfile:
@@ -161,7 +164,7 @@ class Banner extends Component {
                         TSfileName:
                           e.target.files[0] !== undefined
                             ? e.target.files[0].name
-                            : "Choose File"
+                            : "Choose File",
                       });
                     }}
                   />
@@ -171,7 +174,7 @@ class Banner extends Component {
                 </div>
                 <button
                   className="btn btn-primary btn-block"
-                  onClick={e => {
+                  onClick={(e) => {
                     e.preventDefault();
                     if (this.checkIfNotEmptyTS()) {
                       const formData = new FormData();
@@ -190,27 +193,27 @@ class Banner extends Component {
                       Axios.post(
                         "http://162.241.71.139:5000/banner/update",
                         formData
-                      ).then(u => {
+                      ).then((u) => {
                         var tempArr = this.state.TSBannerArray;
                         tempArr.push(u.data.message);
                         this.setState({
                           TSfile: null,
                           TSfileName: "Choose File",
                           TSname: "",
-                          TSBannerArray: tempArr
+                          TSBannerArray: tempArr,
                         });
                         if (this.state.TSid !== null) {
-                          Axios.get("http://162.241.71.139:5000/banner/getAll").then(
-                            u => {
-                              this.setState({
-                                TSBannerArray: [...u.data.message],
-                                TSid: null,
-                                TSname: "",
-                                TSfile: null,
-                                TSfileName: "Choose File"
-                              });
-                            }
-                          );
+                          Axios.get(
+                            "http://162.241.71.139:5000/banner/getAll/To-admin"
+                          ).then((u) => {
+                            this.setState({
+                              TSBannerArray: [...u.data.message],
+                              TSid: null,
+                              TSname: "",
+                              TSfile: null,
+                              TSfileName: "Choose File",
+                            });
+                          });
                         }
                       });
                     }
@@ -230,9 +233,9 @@ class Banner extends Component {
                     inputmode="numeric"
                     value={this.state.IBname}
                     placeholder="Characters"
-                    onChange={e => {
+                    onChange={(e) => {
                       this.setState({
-                        IBname: e.target.value
+                        IBname: e.target.value,
                       });
                     }}
                   />
@@ -243,11 +246,11 @@ class Banner extends Component {
                     inputmode="numeric"
                     value={this.state.IBrenderToShow}
                     required=""
-                    onChange={e => {
+                    onChange={(e) => {
                       var myDate = new Date(e.target.value);
                       var myEpoch = myDate.getTime() / 1000.0;
                       this.setState({
-                        IBrender: myEpoch
+                        IBrender: myEpoch,
                       });
                     }}
                   />
@@ -258,11 +261,11 @@ class Banner extends Component {
                     inputmode="numeric"
                     value={this.state.IBdisposeToShow}
                     required=""
-                    onChange={e => {
+                    onChange={(e) => {
                       var myDate = new Date(e.target.value);
                       var myEpoch = myDate.getTime() / 1000.0;
                       this.setState({
-                        IBdispose: myEpoch
+                        IBdispose: myEpoch,
                       });
                     }}
                   />
@@ -277,7 +280,7 @@ class Banner extends Component {
                         ? this.state.IBfile[0]
                         : this.state.IBfile
                     }
-                    onChange={e => {
+                    onChange={(e) => {
                       console.log(e.target.files[0]);
                       this.setState({
                         IBfile:
@@ -287,7 +290,7 @@ class Banner extends Component {
                         IBfileName:
                           e.target.files[0] !== undefined
                             ? e.target.files[0].name
-                            : "Choose File"
+                            : "Choose File",
                       });
                     }}
                   />
@@ -298,7 +301,7 @@ class Banner extends Component {
                 <button
                   type="submit"
                   className="btn btn-primary btn-block"
-                  onClick={e => {
+                  onClick={(e) => {
                     e.preventDefault();
                     if (this.checkIfNotEmptyIB()) {
                       const formData = new FormData();
@@ -317,27 +320,27 @@ class Banner extends Component {
                       Axios.post(
                         "http://162.241.71.139:5000/banner/update",
                         formData
-                      ).then(u => {
+                      ).then((u) => {
                         var tempArr = this.state.IBBannerArray;
                         tempArr.push(u.data.message);
                         this.setState({
                           IBfile: null,
                           IBfileName: "Choose File",
                           IBname: "",
-                          IBBannerArray: tempArr
+                          IBBannerArray: tempArr,
                         });
                         if (this.state.IBid !== null) {
-                          Axios.get("http://162.241.71.139:5000/banner/getAll").then(
-                            u => {
-                              this.setState({
-                                IBBannerArray: [...u.data.message],
-                                IBid: null,
-                                IBname: "",
-                                IBfile: null,
-                                IBfileName: "Choose File"
-                              });
-                            }
-                          );
+                          Axios.get(
+                            "http://162.241.71.139:5000/banner/getAll/To-admin"
+                          ).then((u) => {
+                            this.setState({
+                              IBBannerArray: [...u.data.message],
+                              IBid: null,
+                              IBname: "",
+                              IBfile: null,
+                              IBfileName: "Choose File",
+                            });
+                          });
                         }
                       });
                     }
@@ -356,9 +359,10 @@ class Banner extends Component {
                     type="text"
                     inputmode="numeric"
                     placeholder="Characters"
-                    onChange={e => {
+                    value={this.state.Tname}
+                    onChange={(e) => {
                       this.setState({
-                        Tname: e.target.name
+                        Tname: e.target.value,
                       });
                     }}
                   />
@@ -368,11 +372,12 @@ class Banner extends Component {
                     type="datetime-local"
                     inputmode="numeric"
                     required=""
-                    onChange={e => {
+                    value={this.state.TrenderToShow}
+                    onChange={(e) => {
                       var myDate = new Date(e.target.value);
                       var myEpoch = myDate.getTime() / 1000.0;
                       this.setState({
-                        Trender: myEpoch
+                        Trender: myEpoch,
                       });
                     }}
                   />
@@ -381,12 +386,13 @@ class Banner extends Component {
                     class="form-control"
                     type="datetime-local"
                     inputmode="numeric"
+                    value={this.state.TdisposeToShow}
                     required=""
-                    onChange={e => {
+                    onChange={(e) => {
                       var myDate = new Date(e.target.value);
                       var myEpoch = myDate.getTime() / 1000.0;
                       this.setState({
-                        Tdispose: myEpoch
+                        Tdispose: myEpoch,
                       });
                     }}
                   />
@@ -396,10 +402,22 @@ class Banner extends Component {
                     type="file"
                     className="custom-file-input"
                     id="customFile"
-                    onChange={e => {
+                    value={
+                      this.state.Tfile !== null
+                        ? this.state.Tfile[0]
+                        : this.state.Tfile
+                    }
+                    onChange={(e) => {
+                      console.log(e.target.files[0]);
                       this.setState({
-                        Tfile: e.target.files[0],
-                        TfileName: e.target.files[0].name
+                        Tfile:
+                          e.target.files[0] !== undefined
+                            ? e.target.files[0]
+                            : null,
+                        TfileName:
+                          e.target.files[0] !== undefined
+                            ? e.target.files[0].name
+                            : "Choose File",
                       });
                     }}
                   />
@@ -407,11 +425,56 @@ class Banner extends Component {
                     {this.state.TfileName}
                   </label>
                 </div>
-                <input
+                <button
                   type="submit"
-                  value="Done"
                   className="btn btn-primary btn-block"
-                />
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (this.checkIfNotEmptyT()) {
+                      const formData = new FormData();
+                      formData.append("bid", this.state.Tid);
+                      formData.append("name", this.state.Tname);
+                      formData.append("dispose", this.state.Tdispose);
+                      formData.append("render", this.state.Trender);
+                      formData.append("updatedUnixT", new Date().getTime());
+                      formData.append("position", 2);
+                      if (this.state.Tfile !== null) {
+                        formData.append("file", this.state.Tfile);
+                        formData.append("fileUpdated", true);
+                      } else {
+                        formData.append("fileUpdated", false);
+                      }
+                      Axios.post(
+                        "http://162.241.71.139:5000/banner/update",
+                        formData
+                      ).then((u) => {
+                        var tempArr = this.state.TBannerArray;
+                        tempArr.push(u.data.message);
+                        this.setState({
+                          Tfile: null,
+                          TfileName: "Choose File",
+                          Tname: "",
+                          TBannerArray: tempArr,
+                        });
+                        if (this.state.Tid !== null) {
+                          Axios.get(
+                            "http://162.241.71.139:5000/banner/getAll/To-admin"
+                          ).then((u) => {
+                            this.setState({
+                              TBannerArray: [...u.data.message],
+                              Tid: null,
+                              Tname: "",
+                              Tfile: null,
+                              TfileName: "Choose File",
+                            });
+                          });
+                        }
+                      });
+                    }
+                  }}
+                >
+                  Done
+                </button>
               </div>
             </form>
           </div>
@@ -425,7 +488,7 @@ class Banner extends Component {
                     <h4>Loading...</h4>
                   </div>
                 ) : (
-                  this.state.TSBannerArray.map(item => (
+                  this.state.TSBannerArray.map((item) => (
                     <div className="Banner-Card-Root">
                       <img
                         src={item.url}
@@ -434,7 +497,7 @@ class Banner extends Component {
                       />
                       <div className="custom-column">
                         <button
-                          onClick={e => {
+                          onClick={(e) => {
                             e.preventDefault();
                             var render = new Date(item.render * 1000)
                               .toISOString()
@@ -448,25 +511,26 @@ class Banner extends Component {
                               TSdisposeToShow: dispose,
                               TSdispose: item.dispose,
                               TSrender: item.render,
-                              TSid: item.id
+                              TSid: item.id,
                             });
                           }}
                         >
                           Update
                         </button>
                         <button
-                          onClick={e => {
+                          onClick={(e) => {
                             e.preventDefault();
                             Axios.get(
-                              "http://162.241.71.139:5000/banner/delete/" + item.id
-                            ).then(u => {
+                              "http://162.241.71.139:5000/banner/delete/" +
+                                item.id
+                            ).then((u) => {
                               if (u.data.message == "deleted") {
                                 Axios.get(
-                                  "http://162.241.71.139:5000/banner/getAll"
-                                ).then(u => {
+                                  "http://162.241.71.139:5000/banner/getAll/To-admin"
+                                ).then((u) => {
                                   console.log(u.data);
                                   this.setState({
-                                    TSBannerArray: [...u.data.message]
+                                    TSBannerArray: [...u.data.message],
                                   });
                                 });
                               }
@@ -521,7 +585,7 @@ class Banner extends Component {
                     <h4>Loading...</h4>
                   </div>
                 ) : (
-                  this.state.IBBannerArray.map(item => (
+                  this.state.IBBannerArray.map((item) => (
                     <div className="Banner-Card-Root">
                       <img
                         src={item.url}
@@ -530,7 +594,7 @@ class Banner extends Component {
                       />
                       <div className="custom-column">
                         <button
-                          onClick={e => {
+                          onClick={(e) => {
                             e.preventDefault();
                             var render = new Date(item.render * 1000)
                               .toISOString()
@@ -544,25 +608,26 @@ class Banner extends Component {
                               IBdisposeToShow: dispose,
                               IBdispose: item.dispose,
                               IBrender: item.render,
-                              IBid: item.id
+                              IBid: item.id,
                             });
                           }}
                         >
                           Update
                         </button>
                         <button
-                          onClick={e => {
+                          onClick={(e) => {
                             e.preventDefault();
                             Axios.get(
-                              "http://162.241.71.139:5000/banner/delete/" + item.id
-                            ).then(u => {
+                              "http://162.241.71.139:5000/banner/delete/" +
+                                item.id
+                            ).then((u) => {
                               if (u.data.message == "deleted") {
                                 Axios.get(
-                                  "http://162.241.71.139:5000/banner/getAll"
-                                ).then(u => {
+                                  "http://162.241.71.139:5000/banner/getAll/To-admin"
+                                ).then((u) => {
                                   console.log(u.data);
                                   this.setState({
-                                    IBBannerArray: [...u.data.message]
+                                    IBBannerArray: [...u.data.message],
                                   });
                                 });
                               }
@@ -617,7 +682,7 @@ class Banner extends Component {
                     <h4>Loading...</h4>
                   </div>
                 ) : (
-                  this.state.TBannerArray.map(item => (
+                  this.state.TBannerArray.map((item) => (
                     <div className="Banner-Card-Root">
                       <img
                         src={item.url}
@@ -626,7 +691,7 @@ class Banner extends Component {
                       />
                       <div className="custom-column">
                         <button
-                          onClick={e => {
+                          onClick={(e) => {
                             e.preventDefault();
                             var render = new Date(item.render * 1000)
                               .toISOString()
@@ -640,25 +705,26 @@ class Banner extends Component {
                               TdisposeToShow: dispose,
                               Tdispose: item.dispose,
                               Trender: item.render,
-                              Tid: item.id
+                              Tid: item.id,
                             });
                           }}
                         >
                           Update
                         </button>
                         <button
-                          onClick={e => {
+                          onClick={(e) => {
                             e.preventDefault();
                             Axios.get(
-                              "http://162.241.71.139:5000/banner/delete/" + item.id
-                            ).then(u => {
+                              "http://162.241.71.139:5000/banner/delete/" +
+                                item.id
+                            ).then((u) => {
                               if (u.data.message == "deleted") {
                                 Axios.get(
-                                  "http://162.241.71.139:5000/banner/getAll"
-                                ).then(u => {
+                                  "http://162.241.71.139:5000/banner/getAll/To-admin"
+                                ).then((u) => {
                                   console.log(u.data);
                                   this.setState({
-                                    TBannerArray: [...u.data.message]
+                                    TBannerArray: [...u.data.message],
                                   });
                                 });
                               }
